@@ -30,7 +30,6 @@ package com.example.maikers;
         "transactions"
 })
 public class Addr {
-
     @JsonProperty("addrStr")
     private String addrStr;
     @JsonProperty("balance")
