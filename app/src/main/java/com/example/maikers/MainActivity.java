@@ -62,7 +62,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 break;
             case R.id.NewTransaction:
-                intent=new Intent(this,WalletEditActivity.class);
+                intent=new Intent(this,SendActivity.class);
+                startActivityForResult(intent,1);
                 break;
 
         }

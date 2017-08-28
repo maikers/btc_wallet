@@ -2,6 +2,7 @@ package com.example.maikers;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -30,6 +31,7 @@ public class HistoryTransactionActivity extends AppCompatActivity implements Vie
     private String myAddr;
     private Retrofit retrofit;
     private static BitcoinAPI bitcoinAPI;
+    public MultipleAddresses his;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,16 +41,19 @@ public class HistoryTransactionActivity extends AppCompatActivity implements Vie
         generate = (Button) findViewById(R.id.generate);
         generate.setOnClickListener(this);
         history=(TextView)findViewById(R.id.history);
+        MultipleAddresses his=new MultipleAddresses();
+        his.setAddrs("mk5Xe2qm2pfQKkf3xHi5rSfUuex54VMFf1,mkgTb6px8uPuqPuEnCChUZeVZLaNJrHgFm");
+
 
 
         retrofit = new Retrofit.Builder()
-                .baseUrl("https://testnet.blockexplorer.com/api/") //Базовая часть адреса
+                .baseUrl("https://testnet.blockexplorer.com/") //Базовая часть адреса
                 .addConverterFactory(GsonConverterFactory.create()) //Конвертер, необходимый для преобразования JSON'а в объекты
-                //.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
         bitcoinAPI = retrofit.create(BitcoinAPI.class); //Создаем объект, при помощи которого будем выполнять запросы
 
-        HistoryTransactionActivity.getApi().getData("mk5Xe2qm2pfQKkf3xHi5rSfUuex54VMFf1").enqueue(new Callback<Addr>() {
+       /* HistoryTransactionActivity.getApi().getHistory("mk5Xe2qm2pfQKkf3xHi5rSfUuex54VMFf1","mkgTb6px8uPuqPuEnCChUZeVZLaNJrHgFm",0,20).enqueue(new Callback<Addr>() {
             @Override
 
             public void onResponse(Call<Addr> call, Response<Addr> response) {
@@ -66,7 +71,7 @@ public class HistoryTransactionActivity extends AppCompatActivity implements Vie
             public void onFailure(Call<Addr> call, Throwable t) {
                history.setText(t.getStackTrace().toString()); //Произошла ошибка
             }
-        });
+        });*/
       /*  history = (TextView) findViewById(R.id.history);
         for (Address i : MainActivity.addresses) {
             if (myAddr.isEmpty()) {
@@ -85,21 +90,35 @@ public class HistoryTransactionActivity extends AppCompatActivity implements Vie
 
 
     private void getWebService() {
-        HistoryTransactionActivity.getApi().getData("mk5Xe2qm2pfQKkf3xHi5rSfUuex54VMFf1").enqueue(new Callback<Addr>() {
+        HistoryTransactionActivity.getApi().getHistory(his).enqueue(new Callback<Addr>() {
             @Override
+
             public void onResponse(Call<Addr> call, Response<Addr> response) {
+
                 if(response.body()!=null) {
-                    history.setText(response.body().toString());
+                    history.setText(response.body().getAddrStr()+" "+response.body().getBalance());
                     //Данные успешно пришли, но надо проверить response.body() на null
                 }
                 else
                 {
-                    history.setText("Nothing");
+                    Integer a;
+                    a=response.code();
+                    history.setText(a.toString());
                 }
             }
             @Override
             public void onFailure(Call<Addr> call, Throwable t) {
-                //Произошла ошибка
+
+                StackTraceElement[] stackTraceElements = t.getStackTrace();
+                String message = "";
+                if(stackTraceElements.length >= 3) {
+                    StackTraceElement element = stackTraceElements[2];
+                    String className = element.getClassName();
+                    String methodName = element.getMethodName();
+                    history.setText(className+" "+methodName);
+
+                }
+                //Произошла ошибка //Произошла ошибка
             }
         });
     }
