@@ -39,7 +39,7 @@ public class UnspentOutputs {
     @JsonProperty("scriptPubKey")
     private String scriptPubKey;
     @JsonProperty("amount")
-    private Long amount;
+    private String amount;
     @JsonProperty("confirmations")
     private Integer confirmations;
     @JsonProperty("confirmation")
@@ -100,12 +100,12 @@ public class UnspentOutputs {
     }
 
     @JsonProperty("amount")
-    public Long getAmount() {
+    public String getAmount() {
         return amount;
     }
 
     @JsonProperty("amount")
-    public void setAmount(Long amount) {
+    public void setAmount(String amount) {
         this.amount = amount;
     }
 

@@ -3,7 +3,9 @@ package com.example.maikers;
 /**
  * Created by maikers on 18.08.17.
  */
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,7 @@ public interface BitcoinAPI {
     @POST("api/addrs/txs")
     Call<Addr> getHistory(@Body  MultipleAddresses ad);
     @GET("/api/addr/{addr}/utxo")
-    Call<UnspentOutputs> getUnsOut(@Path("addr")String addr );
-
+    Call<ArrayList<UnspentOutputs>> getUnsOut(@Path("addr")String addr );
+    @POST("/api/tx/send")
+    Call<JsonObject>send(@Body String s);
 }
